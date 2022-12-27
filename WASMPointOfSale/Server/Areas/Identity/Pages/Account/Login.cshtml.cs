@@ -21,12 +21,18 @@ namespace WASMPointOfSale.Server.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly string _administratorEmail;
+        private readonly string _administratorRoleName;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _logger = logger;
+            _administratorEmail = "administrator@trystanwilcock.com";
+            _administratorRoleName = "Administrator";
         }
 
         /// <summary>
@@ -100,6 +106,60 @@ namespace WASMPointOfSale.Server.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
+
+            await SeedAdministratorUserAndRole();
+        }
+
+        private async Task SeedAdministratorUserAndRole()
+        {
+            ApplicationUser administratorUser = await _signInManager.UserManager.FindByEmailAsync(_administratorEmail);
+
+            if (administratorUser == null)
+            {
+                administratorUser = new ApplicationUser
+                {
+                    Email = _administratorEmail,
+                    NormalizedEmail = _administratorEmail.ToUpper(),
+                    UserName = _administratorEmail,
+                    EmailConfirmed = true
+                };
+
+                _logger.LogInformation("Creating administrator user.");
+                await _signInManager.UserManager.CreateAsync(administratorUser, "Password1!");
+            }
+            else
+            {
+                _logger.LogInformation("Administrator user exists.");
+            }
+
+            bool administratorRoleExists = await _roleManager.RoleExistsAsync(_administratorRoleName);
+            if (!administratorRoleExists)
+            {
+                IdentityRole newAdministratorRole = new IdentityRole
+                {
+                    Name = _administratorRoleName,
+                    NormalizedName = _administratorRoleName.ToUpper()
+                };
+
+                _logger.LogInformation("Creating administrator role.");
+                await _roleManager.CreateAsync(newAdministratorRole);
+            }
+            else
+            {
+                _logger.LogInformation("Administrator role exists.");
+            }
+
+            bool administratorUserIsInAdministratorRole = await _signInManager.UserManager.IsInRoleAsync(administratorUser, _administratorRoleName);
+
+            if (!administratorUserIsInAdministratorRole)
+            {
+                _logger.LogInformation("Adding administrator user to administrator role.");
+                await _signInManager.UserManager.AddToRoleAsync(administratorUser, _administratorRoleName);
+            }
+            else
+            {
+                _logger.LogInformation("Administrator user is already in administrator role.");
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
