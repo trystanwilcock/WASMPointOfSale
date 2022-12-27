@@ -13,5 +13,7 @@ namespace WASMPointOfSale.Server.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+
+        public DbSet<ProductCategory> ProductCategories { get; set; }
     }
 }
