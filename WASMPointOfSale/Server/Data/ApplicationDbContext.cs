@@ -15,5 +15,6 @@ namespace WASMPointOfSale.Server.Data
         }
 
         public DbSet<ProductCategory> ProductCategories { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }
