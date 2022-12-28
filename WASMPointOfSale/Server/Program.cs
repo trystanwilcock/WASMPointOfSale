@@ -1,7 +1,10 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using System;
+using WASMPointOfSale.Server.Classes;
 using WASMPointOfSale.Server.Data;
 using WASMPointOfSale.Server.Models;
 
@@ -25,6 +28,7 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddAutoMapper(typeof(WASMPointOfSaleAutoMapperProfile));
 
 var app = builder.Build();
 

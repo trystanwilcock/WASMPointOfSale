@@ -1,0 +1,61 @@
+﻿@page "/productcategory/create"
+@page "/productcategory/edit/{Id:int}"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@if (Id == 0)
+{
+    <h1>Create Product Category</h1>
+}
+else
+{
+    <h1>Edit Product Category</h1>
+}
+
+@if (productCategory == null)
+{
+    <Loader />
+}
+else
+{
+    <EditForm Model="@productCategory" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3 col-3">
+            <label for="Name" class="form-label">Name</label>
+            <InputText id="Name" @bind-Value="productCategory!.Name" class="form-control" />
+        </div>
+
+        <button type="button" @onclick="Back" class="btn btn-secondary">Back</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    CreateUpdateProductCategoryDTO? productCategory = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id == 0)
+            productCategory = new();
+        else
+            productCategory = await Http.GetFromJsonAsync<CreateUpdateProductCategoryDTO>($"api/productcategory/getcreateupdatedto/{Id}");
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (Id == 0)
+            await Http.PostAsJsonAsync<CreateUpdateProductCategoryDTO>("api/productcategory", productCategory!);
+        else
+            await Http.PutAsJsonAsync<CreateUpdateProductCategoryDTO>("api/productcategory", productCategory!);
+
+        NavigationManager.NavigateTo("productcategory");
+    }
+
+    private void Back() =>
+        NavigationManager.NavigateTo("productcategory");
+}

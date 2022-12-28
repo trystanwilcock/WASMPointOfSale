@@ -1,0 +1,77 @@
+﻿@page "/productcategory"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+
+<PageTitle>Product Categories</PageTitle>
+
+<h1>Product Categories</h1>
+
+<p>
+    <button @onclick="Create" class="btn btn-success">Create</button>
+</p>
+
+@if (productCategories == null)
+{
+    <Loader />
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var productCategory in productCategories)
+            {
+                <tr>
+                    <td>@productCategory.Name</td>
+                    <td class="text-end">
+                        <button @onclick="() => Edit(productCategory.Id)" class="btn btn-warning">Edit</button>
+                        <button @onclick="() => Delete(productCategory.Id, productCategory.Name)" class="btn btn-danger">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private ProductCategoryViewModel[]? productCategories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await Get();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task Get() =>
+        productCategories = await Http.GetFromJsonAsync<ProductCategoryViewModel[]>("api/productcategory");
+
+    private void Create() =>
+        NavigationManager.NavigateTo("productcategory/create");
+
+    private void Edit(int id) =>
+        NavigationManager.NavigateTo($"productcategory/edit/{id}");
+
+    private async Task Delete(int id, string name)
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Delete Product Category {name}?");
+        if (confirmed)
+        {
+            await Http.DeleteAsync($"api/productcategory/{id}");
+            await Get();
+        }
+    }
+}
