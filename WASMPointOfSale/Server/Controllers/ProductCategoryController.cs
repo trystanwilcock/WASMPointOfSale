@@ -48,6 +48,15 @@ namespace WASMPointOfSale.Server.Controllers
                 .FirstAsync();
         }
 
+        [HttpGet("getselectlistitems")]
+        public async Task<IEnumerable<SelectListItemDTO>> GetSelectListItems()
+        {
+            return await _context
+                .ProductCategories
+                .ProjectTo<SelectListItemDTO>(_mapper.ConfigurationProvider)
+                .ToArrayAsync();
+        }
+
         [HttpPost]
         public async Task Create(CreateUpdateProductCategoryDTO productCategoryDTO)
         {

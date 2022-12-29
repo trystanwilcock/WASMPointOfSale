@@ -1,0 +1,95 @@
+﻿@page "/product/create"
+@page "/product/edit/{Id:int}"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@if (Id == 0)
+{
+    <h1>Create Product</h1>
+}
+else
+{
+    <h1>Edit Product</h1>
+}
+
+@if (productCategories == null && product == null)
+{
+    <Loader />
+}
+else
+{
+    <EditForm Model="@product" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="row">
+            <div class="mb-3 col-4">
+                <label for="ProductCategoryId" class="form-label">Category</label>
+                <InputSelect id="ProductCategoryId" @bind-Value="product!.ProductCategoryId" class="form-control">
+                    @foreach (var category in productCategories!)
+                    {
+                        <option value="@category.Value">@category.Text</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="mb-3 col-4">
+                <label for="Code" class="form-label">Code</label>
+                <InputText id="Code" @bind-Value="product!.Code" class="form-control" />
+            </div>
+            <div class="mb-3 col-4">
+                <label for="Name" class="form-label">Name</label>
+                <InputText id="Name" @bind-Value="product!.Name" class="form-control" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="Description" class="form-label">Description</label>
+            <InputText id="Description" @bind-Value="product!.Description" class="form-control" />
+        </div>
+
+        <div class="row">
+            <div class="mb-3 col-2">
+                <label for="Price" class="form-label">Price</label>
+                <InputNumber id="Price" @bind-Value="product!.Price" class="form-control" />
+            </div>
+            <div class="mb-3 col-2">
+                <label for="ReorderAtStockLevel" class="form-label">Reorder Stock Level</label>
+                <InputNumber id="ReorderAtStockLevel" @bind-Value="product!.ReorderAtStockLevel" class="form-control" />
+            </div>
+        </div>
+
+        <button type="button" @onclick="Back" class="btn btn-secondary">Back</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    SelectListItemDTO[]? productCategories = null;
+    CreateUpdateProductDTO? product = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        productCategories = await Http.GetFromJsonAsync<SelectListItemDTO[]>("api/productcategory/getselectlistitems");
+
+        if (Id == 0)
+            product = new CreateUpdateProductDTO { ProductCategoryId = productCategories!.First().Value };
+        else
+            product = await Http.GetFromJsonAsync<CreateUpdateProductDTO>($"api/product/getcreateupdatedto/{Id}");
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (Id == 0)
+            await Http.PostAsJsonAsync<CreateUpdateProductDTO>("api/product", product!);
+        else
+            await Http.PutAsJsonAsync<CreateUpdateProductDTO>("api/product", product!);
+
+        NavigationManager.NavigateTo("product");
+    }
+
+    private void Back() =>
+        NavigationManager.NavigateTo("product");
+}
