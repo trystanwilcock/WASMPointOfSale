@@ -14,6 +14,8 @@
 
         public decimal Price { get; set; }
 
+        public decimal Tax { get; set; }
+
         public int ReorderAtStockLevel { get; set; }
 
 
