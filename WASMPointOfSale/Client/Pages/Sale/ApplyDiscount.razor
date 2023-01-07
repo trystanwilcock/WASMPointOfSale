@@ -1,0 +1,41 @@
+﻿<div class="d-grid gap-2">
+    @if (!showForm)
+    {
+        <button class="btn btn-primary" type="button" @onclick="HandleOnClickApplyDiscount">Apply Discount</button>
+    }
+    else
+    {
+        <EditForm Model="@applyDiscountDTO" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label for="DiscountAmount" class="form-label">Discount Amount</label>
+                <InputNumber id="DiscountAmount" @bind-Value="applyDiscountDTO!.DiscountAmount" class="form-control" />
+            </div>
+
+            <button type="button" @onclick="() => showForm = false" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-success">Apply Discount</button>
+        </EditForm>
+    }
+</div>
+
+@code {
+    [Parameter] public decimal CurrentDiscountAmount { get; set; }
+    [Parameter] public EventCallback<decimal> OnApplyDiscount { get; set; }
+
+    bool showForm = false;
+    ApplyDiscountDTO? applyDiscountDTO;
+
+    private void HandleOnClickApplyDiscount()
+    {
+        applyDiscountDTO = new() { DiscountAmount = CurrentDiscountAmount };
+        showForm = true;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await OnApplyDiscount.InvokeAsync(applyDiscountDTO!.DiscountAmount);
+        showForm = false;
+    }
+}

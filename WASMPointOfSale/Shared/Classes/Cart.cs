@@ -6,9 +6,12 @@ namespace WASMPointOfSale.Shared.Classes
     {
         public List<CartLine> Lines;
 
+        public decimal DiscountAmount { get; set; }
+
         public Cart()
         {
             Lines = new();
+            DiscountAmount = 0;
         }
 
         public int Quantity
@@ -24,6 +27,21 @@ namespace WASMPointOfSale.Shared.Classes
             get
             {
                 return Lines.Sum(l => l.Total);
+            }
+        }
+
+        public decimal Due
+        {
+            get
+            {
+                if (DiscountAmount == 0)
+                {
+                    return Total;
+                }
+                else
+                {
+                    return Total - Total * DiscountAmount / 100;
+                }
             }
         }
 

@@ -57,9 +57,34 @@
             @Cart.Total
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            Discount (%)
+        </div>
+        <div class="col-md-6 text-end">
+            @Cart.DiscountAmount
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            Due
+        </div>
+        <div class="col-md-6 text-end">
+            @Cart.Due
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <ApplyDiscount CurrentDiscountAmount="Cart.DiscountAmount"
+                       OnApplyDiscount="HandleApplyDiscount" />
+        </div>
+    </div>
 }
 
 @code {
     [Parameter] public Cart Cart { get; set; }
     [Parameter] public EventCallback<ProductViewModel> OnRemoveProduct { get; set; }
+
+    public void HandleApplyDiscount(decimal discountAmount) =>
+        Cart.DiscountAmount = discountAmount;
 }
