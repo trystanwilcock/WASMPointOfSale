@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WASMPointOfSale.Shared.DTOs
 {
@@ -26,7 +21,26 @@ namespace WASMPointOfSale.Shared.DTOs
         public string Description { get; set; }
 
         [Range(0, double.MaxValue, ErrorMessage = "Price must be 0 or greater.")]
-        public decimal Price { get; set; }
+        public decimal Price
+        {
+            get
+            {
+                return _price;
+            }
+            set
+            {
+                _price = value;
+
+                if (Id == 0)
+                {
+                    Tax = _price * (decimal)0.2;
+                }
+            }
+        }
+
+        private decimal _price;
+
+        public decimal Tax { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Reorder stock level must be 0 or greater.")]
         public int ReorderAtStockLevel { get; set; }

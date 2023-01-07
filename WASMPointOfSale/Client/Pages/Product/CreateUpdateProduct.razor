@@ -54,6 +54,14 @@ else
                 <InputNumber id="Price" @bind-Value="product!.Price" class="form-control" />
             </div>
             <div class="mb-3 col-2">
+                <label for="Tax" class="form-label">Tax</label>
+                <InputNumber id="Tax" @bind-Value="product!.Tax" class="form-control" />
+                @if (product.Id == 0)
+                {
+                    <p class="small fst-italic">This will default to 20% of the price. If the tax on this item is different, amend this value. If the item is exempt from tax, set this value to 0.</p>
+                }
+            </div>
+            <div class="mb-3 col-2">
                 <label for="ReorderAtStockLevel" class="form-label">Reorder Stock Level</label>
                 <InputNumber id="ReorderAtStockLevel" @bind-Value="product!.ReorderAtStockLevel" class="form-control" />
             </div>
