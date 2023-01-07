@@ -1,0 +1,81 @@
+﻿<div class="card" style="height: 700px; overflow-y: scroll;">
+    <div class="card-body">
+        @if (ProductCategories != null && Products != null)
+        {
+            if (filteredProducts != null)
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            <button type="button" @onclick="() => ClearProductCategory()" class="btn btn-sm btn-secondary">
+                                Back
+                            </button>
+                            Category: @selectedProductCategory!.Name
+                        </p>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    @foreach (var product in filteredProducts)
+                    {
+                        <div class="col">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <p class="text-center mb-0">
+                                        <button type="button" @onclick="() => SelectProduct(product)" class="btn btn-link">
+                                            @product.Name
+                                        </button>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else if (selectedProductCategory == null)
+            {
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    @foreach (var productCategory in ProductCategories)
+                    {
+                        <div class="col">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <p class="text-center mb-0">
+                                        <button type="button" @onclick="() => SelectProductCategory(productCategory)" class="btn btn-link">
+                                            @productCategory.Name
+                                        </button>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public ProductCategoryViewModel[]? ProductCategories { get; set; }
+    [Parameter] public ProductViewModel[]? Products { get; set; }
+    [Parameter] public EventCallback<ProductViewModel> OnProductSelect { get; set; }
+
+    ProductCategoryViewModel? selectedProductCategory = null;
+    ProductViewModel[]? filteredProducts = null;
+
+    private void SelectProductCategory(ProductCategoryViewModel productCategory)
+    {
+        selectedProductCategory = productCategory;
+        filteredProducts = Products!.Where(p => p.ProductCategoryId == selectedProductCategory.Id).ToArray();
+    }
+
+    private void ClearProductCategory()
+    {
+        filteredProducts = null;
+        selectedProductCategory = null;
+    }
+
+    private async Task SelectProduct(ProductViewModel product)
+    {
+        await OnProductSelect.InvokeAsync(product);
+    }
+}

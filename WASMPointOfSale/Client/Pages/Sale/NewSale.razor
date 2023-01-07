@@ -1,0 +1,41 @@
+﻿@page "/newsale"
+@attribute [Authorize]
+@inject HttpClient Http
+
+<PageTitle>New Sale</PageTitle>
+
+<h1>New Sale</h1>
+
+<div class="row">
+    <div class="col-md-5">
+        <CartDisplay Cart="cart"
+                     OnRemoveProduct="HandleRemoveProduct" />
+    </div>
+    <div class="col-md-7">
+        <ProductSelection ProductCategories="allProductCategories"
+                          Products="allProducts"
+                          OnProductSelect="HandleProductSelect" />
+    </div>
+</div>
+
+@code {
+    ProductCategoryViewModel[]? allProductCategories;
+    ProductViewModel[]? allProducts;
+    Cart cart = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        allProductCategories = await Http.GetFromJsonAsync<ProductCategoryViewModel[]>("api/productcategory");
+        allProducts = await Http.GetFromJsonAsync<ProductViewModel[]>("api/product");
+    }
+
+    private void HandleProductSelect(ProductViewModel product)
+    {
+        cart.AddToCart(product);
+    }
+
+    private void HandleRemoveProduct(ProductViewModel product)
+    {
+        cart.RemoveFromCart(product);
+    }
+}

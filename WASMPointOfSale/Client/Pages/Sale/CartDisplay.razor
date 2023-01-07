@@ -1,0 +1,57 @@
+﻿@if (Cart != null)
+{
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div style="height: 350px; overflow-y: scroll;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var line in Cart.Lines)
+                                {
+                                    <tr>
+                                        <td>@line.Product.Name</td>
+                                        <td>@line.Product.Price</td>
+                                        <td>@line.Quantity</td>
+                                        <td class="text-end">
+                                            <button @onclick="() => OnRemoveProduct.InvokeAsync(line.Product)" class="btn btn-danger">Delete</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    Quantity: @Cart.Quantity
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    Total: @Cart.Total
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Cart Cart { get; set; }
+    [Parameter] public EventCallback<ProductViewModel> OnRemoveProduct { get; set; }
+}
