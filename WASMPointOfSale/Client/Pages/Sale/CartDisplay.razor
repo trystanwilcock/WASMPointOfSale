@@ -35,18 +35,26 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    Quantity: @Cart.Quantity
-                </div>
-            </div>
+            Quantity
         </div>
+        <div class="col-md-6 text-end">
+            @Cart.Quantity
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    Total: @Cart.Total
-                </div>
-            </div>
+            Tax
+        </div>
+        <div class="col-md-6 text-end">
+            @Cart.Tax
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            Total
+        </div>
+        <div class="col-md-6 text-end">
+            @Cart.Total
         </div>
     </div>
 }

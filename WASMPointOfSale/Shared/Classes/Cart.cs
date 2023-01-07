@@ -27,6 +27,14 @@ namespace WASMPointOfSale.Shared.Classes
             }
         }
 
+        public decimal Tax
+        {
+            get
+            {
+                return Lines.Sum(l => l.Product.Tax);
+            }
+        }
+
         public void AddToCart(ProductViewModel product)
         {
             var existingLine = GetCartLine(product.Code);
