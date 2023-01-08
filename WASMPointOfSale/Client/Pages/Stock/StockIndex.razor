@@ -1,0 +1,69 @@
+﻿@page "/stock"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Manage Stock Levels</PageTitle>
+
+<h1>Manage Stock Levels</h1>
+
+<p>
+    <button @onclick="() => Add()" class="btn btn-success">Add Stock</button>
+</p>
+
+@if (stockLevels == null)
+{
+    <Loader />
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Current Stock</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var stockLevel in stockLevels)
+            {
+                <tr>
+                    <td>@stockLevel.ProductName</td>
+                    <td>@stockLevel.StockLevel</td>
+                    <td class="text-end">
+                        <button @onclick="() => Add(stockLevel.ProductId)" class="btn btn-success">Add Stock</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private StockViewModel[]? stockLevels;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await Get();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task Get() =>
+        stockLevels = await Http.GetFromJsonAsync<StockViewModel[]>("api/stock");
+
+    private void Add(int? productId = null)
+    {
+        if (productId == null)
+            NavigationManager.NavigateTo("stock/add");
+        else
+            NavigationManager.NavigateTo($"stock/add/{productId}");
+    }
+}
