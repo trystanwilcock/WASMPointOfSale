@@ -49,7 +49,7 @@ namespace WASMPointOfSale.Shared.Classes
         {
             get
             {
-                return Lines.Sum(l => l.Product.Tax);
+                return Lines.Sum(l => l.Tax);
             }
         }
 
@@ -102,6 +102,14 @@ namespace WASMPointOfSale.Shared.Classes
             get
             {
                 return Product.Price * Quantity;
+            }
+        }
+
+        public decimal Tax
+        {
+            get
+            {
+                return Product.Tax * Quantity;
             }
         }
     }
