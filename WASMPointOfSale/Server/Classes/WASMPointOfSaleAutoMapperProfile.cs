@@ -18,6 +18,11 @@ namespace WASMPointOfSale.Server.Classes
 
             CreateMap<Product, ProductViewModel>();
             CreateMap<Product, CreateUpdateProductDTO>().ReverseMap();
+            CreateMap<Product, SelectListItemDTO>()
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<AddStockDTO, Stock>();
         }
     }
 }

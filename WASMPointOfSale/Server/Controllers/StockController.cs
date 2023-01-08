@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WASMPointOfSale.Server.Data;
+using WASMPointOfSale.Server.Models;
+using WASMPointOfSale.Shared.DTOs;
 using WASMPointOfSale.Shared.ViewModels;
 
 namespace WASMPointOfSale.Server.Controllers
@@ -38,6 +40,13 @@ namespace WASMPointOfSale.Server.Controllers
                           .OrderBy(vm => vm.StockLevel)
                           .ThenBy(vm => vm.ProductName)
                           .ToArrayAsync();
+        }
+
+        [HttpPost]
+        public async Task Add(AddStockDTO addStockDTO)
+        {
+            await _context.AddAsync(_mapper.Map<Stock>(addStockDTO));
+            await _context.SaveChangesAsync();
         }
     }
 }

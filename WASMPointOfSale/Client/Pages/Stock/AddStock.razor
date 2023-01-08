@@ -1,0 +1,64 @@
+﻿@page "/stock/add"
+@page "/stock/add/{ProductId:int}"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>Add Stock</h1>
+
+@if (products == null)
+{
+    <Loader />
+}
+else
+{
+    <EditForm Model="@addStockDTO" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="row">
+            <div class="mb-3 col-6">
+                <label for="ProductId" class="form-label">Product</label>
+                <InputSelect id="ProductId" @bind-Value="addStockDTO!.ProductId" class="form-control">
+                    @foreach (var product in products!)
+                    {
+                        <option value="@product.Value">@product.Text</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="mb-3 col-2">
+                <label for="Quantity" class="form-label">Quantity</label>
+                <InputNumber id="Quantity" @bind-Value="addStockDTO!.Quantity" class="form-control" />
+            </div>
+        </div>
+
+        <button type="button" @onclick="Back" class="btn btn-secondary">Back</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int ProductId { get; set; }
+
+    SelectListItemDTO[]? products = null;
+    AddStockDTO? addStockDTO = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await Http.GetFromJsonAsync<SelectListItemDTO[]>("api/product/getselectlistitems");
+
+        if (ProductId == 0)
+            addStockDTO = new() { ProductId = products!.First().Value };
+        else
+            addStockDTO = new() { ProductId = ProductId };
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PostAsJsonAsync<AddStockDTO>("api/stock", addStockDTO!);
+        NavigationManager.NavigateTo("stock");
+    }
+
+    private void Back() =>
+        NavigationManager.NavigateTo("stock");
+}
