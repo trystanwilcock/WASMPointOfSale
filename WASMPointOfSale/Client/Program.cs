@@ -1,3 +1,4 @@
+using Blazored.Modal;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -14,5 +15,7 @@ builder.Services.AddHttpClient("WASMPointOfSale.ServerAPI", client => client.Bas
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("WASMPointOfSale.ServerAPI"));
 
 builder.Services.AddApiAuthorization();
+
+builder.Services.AddBlazoredModal();
 
 await builder.Build().RunAsync();
