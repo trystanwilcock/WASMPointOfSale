@@ -78,6 +78,10 @@
             <ApplyDiscount CurrentDiscountAmount="Cart.DiscountAmount"
                        OnApplyDiscount="HandleApplyDiscount" />
         </div>
+        <div class="col-md-6">
+            <FinishAndPay AmountDue="Cart.Total"
+                      OnAddPayment="HandleAddPayment" />
+        </div>
     </div>
 }
 
@@ -87,4 +91,9 @@
 
     public void HandleApplyDiscount(decimal discountAmount) =>
         Cart.DiscountAmount = discountAmount;
+
+    public async Task HandleAddPayment(AddPaymentDTO addPaymentDTO)
+    {
+
+    }
 }

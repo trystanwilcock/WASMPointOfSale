@@ -1,0 +1,22 @@
+﻿<div class="d-grid gap-2">
+    <button @onclick="ShowModal" class="btn btn-primary" type="button">Finish & Pay</button>
+</div>
+
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+    [Parameter] public decimal AmountDue { get; set; }
+    [Parameter] public EventCallback<AddPaymentDTO> OnAddPayment { get; set; }
+
+    public async Task ShowModal()
+    {
+        ModalParameters modalParameters = new();
+        modalParameters.Add(nameof(AddPayment.AmountDue), AmountDue);
+        var addPaymentModal = Modal.Show<AddPayment>("Add Payment", modalParameters);
+        var result = await addPaymentModal.Result;
+        if (result.Confirmed)
+        {
+            var addPaymentDTO = (AddPaymentDTO)result.Data!;
+            await OnAddPayment.InvokeAsync(addPaymentDTO);
+        }
+    }
+}

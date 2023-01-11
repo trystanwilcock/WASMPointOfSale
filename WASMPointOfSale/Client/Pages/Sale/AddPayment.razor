@@ -1,0 +1,40 @@
+﻿@if (addPaymentDTO == null)
+{
+    <Loader />
+}
+else
+{
+    <p>
+        Amount Due: @addPaymentDTO.AmountDue
+    </p>
+
+    <EditForm Model="@addPaymentDTO" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="PaymentAmount" class="form-label">Payment Amount</label>
+            <InputNumber id="PaymentAmount" @bind-Value="addPaymentDTO!.PaymentAmount" class="form-control" />
+        </div>
+
+        <p>
+            Left to Pay: @addPaymentDTO.LeftToPay
+        </p>
+
+        <button type="button" @onclick="() => BlazoredModalInstance.CancelAsync()" class="btn btn-secondary">Cancel</button>
+        <button type="submit" class="btn btn-success">Add Payment</button>
+    </EditForm>
+}
+
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModalInstance { get; set; } = default!;
+    [Parameter] public decimal AmountDue { get; set; }
+
+    AddPaymentDTO? addPaymentDTO;
+
+    protected override void OnInitialized() =>
+        addPaymentDTO = new(AmountDue) { PaymentAmount = AmountDue };
+
+    public async Task HandleValidSubmit() =>
+        await BlazoredModalInstance.CloseAsync(ModalResult.Ok(addPaymentDTO));
+}
