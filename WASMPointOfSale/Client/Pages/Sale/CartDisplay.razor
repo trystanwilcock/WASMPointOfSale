@@ -79,7 +79,7 @@
                        OnApplyDiscount="HandleApplyDiscount" />
         </div>
         <div class="col-md-6">
-            <FinishAndPay AmountDue="Cart.Total"
+            <FinishAndPay AmountDue="Cart.Total" 
                       OnAddPayment="HandleAddPayment" />
         </div>
     </div>
@@ -88,12 +88,11 @@
 @code {
     [Parameter] public Cart Cart { get; set; }
     [Parameter] public EventCallback<ProductViewModel> OnRemoveProduct { get; set; }
+    [Parameter] public EventCallback<AddPaymentDTO> OnAddPayment { get; set; }
 
     public void HandleApplyDiscount(decimal discountAmount) =>
         Cart.DiscountAmount = discountAmount;
 
-    public async Task HandleAddPayment(AddPaymentDTO addPaymentDTO)
-    {
-
-    }
+    public async Task HandleAddPayment(AddPaymentDTO addPaymentDTO) =>
+        await OnAddPayment.InvokeAsync(addPaymentDTO);
 }

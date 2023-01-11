@@ -9,7 +9,8 @@
 <div class="row">
     <div class="col-md-5">
         <CartDisplay Cart="cart"
-                     OnRemoveProduct="HandleRemoveProduct" />
+                     OnRemoveProduct="HandleRemoveProduct"
+                     OnAddPayment="HandleAddPayment" />
     </div>
     <div class="col-md-7">
         <ProductSelection ProductCategories="allProductCategories"
@@ -37,5 +38,11 @@
     private void HandleRemoveProduct(ProductViewModel product)
     {
         cart.RemoveFromCart(product);
+    }
+
+    private async Task HandleAddPayment(AddPaymentDTO addPaymentDTO)
+    {
+        NewSaleDTO newSaleDTO = new() { Cart = cart, Payment = addPaymentDTO };
+        await Http.PostAsJsonAsync<NewSaleDTO>("api/sale", newSaleDTO);
     }
 }
