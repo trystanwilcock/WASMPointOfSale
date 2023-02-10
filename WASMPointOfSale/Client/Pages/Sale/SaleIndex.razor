@@ -1,0 +1,64 @@
+﻿@page "/sales"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Sales</PageTitle>
+
+<h1>Sales</h1>
+
+<p>
+    <button @onclick="New" class="btn btn-success">New Sale</button>
+</p>
+
+@if (sales == null)
+{
+    <Loader />
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Quantity</th>
+                <th>Due</th>
+                <th>Paid</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sale in sales)
+            {
+                <tr>
+                    <td>@sale.Timestamp</td>
+                    <td>@sale.Quantity</td>
+                    <td>@sale.TotalDue</td>
+                    <td>@sale.TotalPaid</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private SaleViewModel[]? sales;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await Get();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task Get() =>
+        sales = await Http.GetFromJsonAsync<SaleViewModel[]>("api/sale");
+
+    private void New() =>
+        NavigationManager.NavigateTo("newsale");
+}

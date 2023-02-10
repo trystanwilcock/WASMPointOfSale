@@ -1,10 +1,13 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WASMPointOfSale.Server.Data;
 using WASMPointOfSale.Server.Models;
 using WASMPointOfSale.Shared.Classes;
 using WASMPointOfSale.Shared.DTOs;
+using WASMPointOfSale.Shared.ViewModels;
 
 namespace WASMPointOfSale.Server.Controllers
 {
@@ -21,6 +24,23 @@ namespace WASMPointOfSale.Server.Controllers
         {
             _context = context;
             _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<SaleViewModel>> Get()
+        {
+            return await _context
+                .Sales
+                .Include(s => s.SaleTransactions)
+                .OrderByDescending(s => s.Timestamp)
+                .Select(s => new SaleViewModel
+                {
+                    Timestamp = s.Timestamp,
+                    Quantity = s.Quantity,
+                    TotalDue = s.Due,
+                    TotalPaid = s.SaleTransactions!.Where(st => st.Type == SaleTransactionType.Payment.ToString()).Sum(st => st.Amount)
+                })
+                .ToArrayAsync();
         }
 
         [HttpPost]
