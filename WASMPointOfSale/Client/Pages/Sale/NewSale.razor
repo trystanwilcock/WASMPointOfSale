@@ -44,5 +44,6 @@
     {
         NewSaleDTO newSaleDTO = new() { Cart = cart, Payment = addPaymentDTO };
         await Http.PostAsJsonAsync<NewSaleDTO>("api/sale", newSaleDTO);
+        cart = new();
     }
 }
