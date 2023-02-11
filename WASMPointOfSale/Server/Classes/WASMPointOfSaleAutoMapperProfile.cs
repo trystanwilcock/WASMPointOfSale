@@ -23,6 +23,9 @@ namespace WASMPointOfSale.Server.Classes
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id));
 
             CreateMap<AddStockDTO, Stock>();
+
+            CreateMap<SaleProduct, SaleDetailProductViewModel>();
+            CreateMap<SaleTransaction, SaleDetailTransactionViewModel>();
         }
     }
 }

@@ -1,0 +1,21 @@
+﻿<div class="card">
+    <div class="card-body">
+        <table class="table">
+            @foreach (var transaction in Transactions)
+            {
+                <tr>
+                    <td>
+                        @transaction.Type
+                    </td>
+                    <td>
+                        @transaction.Amount
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter] public IEnumerable<SaleDetailTransactionViewModel> Transactions { get; set; } = default!;
+}

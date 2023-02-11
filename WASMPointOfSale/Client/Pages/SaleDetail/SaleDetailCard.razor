@@ -1,0 +1,34 @@
+﻿<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <tr>
+                <td>Timestamp</td>
+                <td>@SaleDetailViewModel.Timestamp</td>
+            </tr>
+            <tr>
+                <td>Quantity</td>
+                <td>@SaleDetailViewModel.Quantity</td>
+            </tr>
+            <tr>
+                <td>Tax</td>
+                <td>@SaleDetailViewModel.Tax</td>
+            </tr>
+            <tr>
+                <td>Total</td>
+                <td>@SaleDetailViewModel.Total</td>
+            </tr>
+            <tr>
+                <td>Discount</td>
+                <td>@SaleDetailViewModel.Discount</td>
+            </tr>
+            <tr>
+                <td>Due</td>
+                <td>@SaleDetailViewModel.Due</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter] public SaleDetailViewModel SaleDetailViewModel { get; set; } = default!;
+}

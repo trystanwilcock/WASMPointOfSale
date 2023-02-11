@@ -1,0 +1,27 @@
+﻿<div class="card">
+    <div class="card-body">
+        <table class="table">
+            @foreach (var product in Products)
+            {
+                <tr>
+                    <td>
+                        @product.Code
+                    </td>
+                    <td>
+                        @product.Name
+                    </td>
+                    <td>
+                        @product.Price
+                    </td>
+                    <td>
+                        @product.Tax
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter] public IEnumerable<SaleDetailProductViewModel> Products { get; set; } = default!;
+}

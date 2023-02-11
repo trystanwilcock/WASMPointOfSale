@@ -17,12 +17,15 @@ namespace WASMPointOfSale.Server.Controllers
     public class SaleController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
         private readonly ILogger<SaleController> _logger;
 
         public SaleController(ApplicationDbContext context,
+            IMapper mapper,
             ILogger<SaleController> logger)
         {
             _context = context;
+            this._mapper = mapper;
             _logger = logger;
         }
 
@@ -35,12 +38,35 @@ namespace WASMPointOfSale.Server.Controllers
                 .OrderByDescending(s => s.Timestamp)
                 .Select(s => new SaleViewModel
                 {
+                    Id = s.Id,
                     Timestamp = s.Timestamp,
                     Quantity = s.Quantity,
                     TotalDue = s.Due,
                     TotalPaid = s.SaleTransactions!.Where(st => st.Type == SaleTransactionType.Payment.ToString()).Sum(st => st.Amount)
                 })
                 .ToArrayAsync();
+        }
+
+        [HttpGet("details/{id:int}")]
+        public async Task<SaleDetailViewModel> GetSaleDetails(int id)
+        {
+            return await _context
+                .Sales
+                .Where(s => s.Id == id)
+                .Include(s => s.SaleProducts)
+                .Include(s => s.SaleTransactions)
+                .Select(s => new SaleDetailViewModel
+                {
+                    Timestamp = s.Timestamp,
+                    Quantity = s.Quantity,
+                    Tax = s.Tax,
+                    Total = s.Total,
+                    Discount = s.Discount,
+                    Due = s.Due,
+                    Products = _mapper.Map<IEnumerable<SaleDetailProductViewModel>>(s.SaleProducts),
+                    Transactions = _mapper.Map<IEnumerable<SaleDetailTransactionViewModel>>(s.SaleTransactions)
+                })
+                .FirstAsync();
         }
 
         [HttpPost]
