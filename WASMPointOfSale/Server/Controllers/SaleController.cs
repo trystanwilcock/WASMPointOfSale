@@ -98,14 +98,24 @@ namespace WASMPointOfSale.Server.Controllers
 
         private static List<SaleProduct> GetNewSaleProducts(List<CartLine> cartLines, DateTime timestamp)
         {
-            return cartLines.Select(l => new SaleProduct
+            List<SaleProduct> saleProducts = new();
+
+            foreach (var cartLine in cartLines)
             {
-                Timestamp = timestamp,
-                Code = l.Product.Code,
-                Name = l.Product.Name,
-                Price = l.Product.Price,
-                Tax = l.Product.Tax
-            }).ToList();
+                for (int i = 0; i < cartLine.Quantity; i++)
+                {
+                    saleProducts.Add(new SaleProduct
+                    {
+                        Timestamp = timestamp,
+                        Code = cartLine.Product.Code,
+                        Name = cartLine.Product.Name,
+                        Price = cartLine.Product.Price,
+                        Tax = cartLine.Product.Tax
+                    });
+                }
+            }
+
+            return saleProducts;
         }
 
         private static List<SaleTransaction> GetNewSaleTransactions(decimal paymentAmount, DateTime timestamp)
