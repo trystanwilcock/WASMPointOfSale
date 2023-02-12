@@ -21,7 +21,9 @@ else
         <thead>
             <tr>
                 <th>Product</th>
-                <th>Current Stock</th>
+                <th>Stock Added</th>
+                <th>Items Sold</th>
+                <th>Stock Remaining</th>
                 <th></th>
             </tr>
         </thead>
@@ -30,7 +32,9 @@ else
             {
                 <tr>
                     <td>@stockLevel.ProductName</td>
-                    <td>@stockLevel.StockLevel</td>
+                    <td>@stockLevel.StockAdded</td>
+                    <td>@stockLevel.ItemsSold</td>
+                    <td>@stockLevel.StockRemaining</td>
                     <td class="text-end">
                         <button @onclick="() => Add(stockLevel.ProductId)" class="btn btn-success">Add Stock</button>
                     </td>

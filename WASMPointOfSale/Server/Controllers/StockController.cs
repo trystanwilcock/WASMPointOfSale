@@ -30,16 +30,27 @@ namespace WASMPointOfSale.Server.Controllers
         [HttpGet]
         public async Task<IEnumerable<StockViewModel>> Get()
         {
-            return await (from p in _context.Products
+            var stockRecords = await (from p in _context.Products
                           select new StockViewModel
                           {
                               ProductId = p.Id,
                               ProductName = p.Name,
-                              StockLevel = _context.Stocks.Where(s => s.ProductId == p.Id).Sum(s => s.Quantity)
+                                          StockAdded = (
+                                            (from s in _context.Stocks
+                                             where s.ProductId == p.Id
+                                             select s.Quantity).Sum()
+                                          ),
+                                          ItemsSold = (
+                                            (from s in _context.SaleProducts
+                                             where s.Code == p.Code
+                                             select s).Count()
+                                          )
                           })
-                          .OrderBy(vm => vm.StockLevel)
-                          .ThenBy(vm => vm.ProductName)
                           .ToArrayAsync();
+
+            return stockRecords
+                .OrderBy(vm => vm.StockRemaining)
+                .ThenBy(vm => vm.ProductName);
         }
 
         [HttpPost]
