@@ -31,10 +31,10 @@ namespace WASMPointOfSale.Server.Controllers
         public async Task<IEnumerable<StockViewModel>> Get()
         {
             var stockRecords = await (from p in _context.Products
-                          select new StockViewModel
-                          {
-                              ProductId = p.Id,
-                              ProductName = p.Name,
+                                      select new StockViewModel
+                                      {
+                                          ProductId = p.Id,
+                                          ProductName = p.Name,
                                           StockAdded = (
                                             (from s in _context.Stocks
                                              where s.ProductId == p.Id
@@ -45,8 +45,8 @@ namespace WASMPointOfSale.Server.Controllers
                                              where s.Code == p.Code
                                              select s).Count()
                                           )
-                          })
-                          .ToArrayAsync();
+                                      })
+                              .ToArrayAsync();
 
             return stockRecords
                 .OrderBy(vm => vm.StockRemaining)
@@ -58,6 +58,27 @@ namespace WASMPointOfSale.Server.Controllers
         {
             await _context.AddAsync(_mapper.Map<Stock>(addStockDTO));
             await _context.SaveChangesAsync();
+        }
+
+        [HttpPost]
+        [Route("request")]
+        public async Task<bool> StockRequest(StockRequestDTO stockRequestDTO)
+        {
+            var product = await _context
+                .Products
+                .FindAsync(stockRequestDTO.ProductId);
+
+            var stock = _context
+                .Stocks
+                .Where(s => s.ProductId == stockRequestDTO.ProductId)
+                .Sum(s => s.Quantity);
+
+            var sold = _context
+                .SaleProducts
+                .Where(s => s.Code == product!.Code)
+                .Count();
+
+            return stock - sold - stockRequestDTO.CartQuantity > 0 ? true : false;
         }
     }
 }

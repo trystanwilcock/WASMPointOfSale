@@ -1,6 +1,7 @@
 ﻿@page "/newsale"
 @attribute [Authorize]
 @inject HttpClient Http
+@inject IJSRuntime JsRuntime
 
 <PageTitle>New Sale</PageTitle>
 
@@ -30,9 +31,21 @@
         allProducts = await Http.GetFromJsonAsync<ProductViewModel[]>("api/product");
     }
 
-    private void HandleProductSelect(ProductViewModel product)
+    private async Task HandleProductSelect(ProductViewModel product)
     {
-        cart.AddToCart(product);
+        StockRequestDTO stockRequestDTO = new()
+            {
+                ProductId = product.Id,
+                CartQuantity = cart.ProductQuantity(product.Code)
+            };
+
+        var response = await Http.PostAsJsonAsync<StockRequestDTO>("api/stock/request", stockRequestDTO);
+        var canBook = await response.Content.ReadFromJsonAsync<bool>();
+
+        if (canBook)
+            cart.AddToCart(product);
+        else
+            await JsRuntime.InvokeVoidAsync("alert", "Unable to add to cart, insufficient stock.");
     }
 
     private void HandleRemoveProduct(ProductViewModel product)

@@ -85,9 +85,16 @@ namespace WASMPointOfSale.Shared.Classes
             }
         }
 
-        private CartLine? GetCartLine(string code)
+        public int ProductQuantity(string productCode)
         {
-            return Lines.FirstOrDefault(l => l.Product.Code == code);
+            var existingLine = GetCartLine(productCode);
+
+            return existingLine == null ? 0 : existingLine.Quantity;
+        }
+
+        private CartLine? GetCartLine(string productCode)
+        {
+            return Lines.FirstOrDefault(l => l.Product.Code == productCode);
         }
     }
 
