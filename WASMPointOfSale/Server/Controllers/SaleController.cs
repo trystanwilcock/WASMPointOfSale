@@ -134,5 +134,20 @@ namespace WASMPointOfSale.Server.Controllers
                 }
             };
         }
+
+        [HttpPost]
+        [Route("addpayment")]
+        public async Task AddPaymentToSale(AddPaymentDTO addPaymentDTO)
+        {
+            SaleTransaction saleTransaction = new SaleTransaction
+            {
+                SaleId = addPaymentDTO.SaleId,
+                Timestamp = DateTime.Now,
+                Type = SaleTransactionType.Payment.ToString(),
+                Amount = addPaymentDTO.PaymentAmount
+            };
+            await _context.AddAsync(saleTransaction);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -23,5 +23,7 @@ namespace WASMPointOfSale.Shared.DTOs
                 return AmountDue - PaymentAmount;
             }
         }
+
+        public int SaleId { get; set; }
     }
 }

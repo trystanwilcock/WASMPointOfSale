@@ -79,8 +79,9 @@
                        OnApplyDiscount="HandleApplyDiscount" />
         </div>
         <div class="col-md-6">
-            <FinishAndPay AmountDue="Cart.Total" 
-                      OnAddPayment="HandleAddPayment" />
+            <AddPaymentButton AmountDue="Cart.Total"
+                          OnAddPayment="HandleAddPayment"
+                          ButtonText="Finish & Pay" />
         </div>
     </div>
 }

@@ -6,10 +6,16 @@
         <SaleDetailProductCard Products="SaleDetailViewModel.Products" />
     </div>
     <div class="col-md-4">
-        <SaleDetailTransactionCard Transactions="SaleDetailViewModel.Transactions" />
+        <SaleDetailTransactionCard Outstanding="SaleDetailViewModel.Outstanding"
+                                   Transactions="SaleDetailViewModel.Transactions"
+                                   OnAddPayment="HandleAddPayment" />
     </div>
 </div>
 
 @code {
     [Parameter] public SaleDetailViewModel SaleDetailViewModel { get; set; } = default!;
+    [Parameter] public EventCallback<AddPaymentDTO> OnAddPayment { get; set; }
+
+    private async Task HandleAddPayment(AddPaymentDTO addPaymentDTO) =>
+        await OnAddPayment.InvokeAsync(addPaymentDTO);
 }

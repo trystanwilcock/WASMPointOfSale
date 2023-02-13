@@ -1,5 +1,10 @@
 ﻿<div class="card">
     <div class="card-body">
+        @if (Outstanding > 0)
+        {
+            <AddPaymentButton AmountDue="Outstanding"
+                          ButtonText="Add Payment" OnAddPayment="HandleAddPayment" />
+        }
         <table class="table">
             @foreach (var transaction in Transactions)
             {
@@ -17,5 +22,10 @@
 </div>
 
 @code {
+    [Parameter] public decimal Outstanding { get; set; }
     [Parameter] public IEnumerable<SaleDetailTransactionViewModel> Transactions { get; set; } = default!;
+    [Parameter] public EventCallback<AddPaymentDTO> OnAddPayment { get; set; }
+
+    private async Task HandleAddPayment(AddPaymentDTO addPaymentDTO) =>
+        await OnAddPayment.InvokeAsync(addPaymentDTO);
 }

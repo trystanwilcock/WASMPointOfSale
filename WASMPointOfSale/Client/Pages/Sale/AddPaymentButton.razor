@@ -1,9 +1,10 @@
 ﻿<div class="d-grid gap-2">
-    <button @onclick="ShowModal" class="btn btn-primary" type="button">Finish & Pay</button>
+    <button @onclick="ShowModal" class="btn btn-primary" type="button">@ButtonText</button>
 </div>
 
 @code {
     [CascadingParameter] public IModalService Modal { get; set; } = default!;
+    [Parameter] public string ButtonText { get; set; } = default!;
     [Parameter] public decimal AmountDue { get; set; }
     [Parameter] public EventCallback<AddPaymentDTO> OnAddPayment { get; set; }
 
