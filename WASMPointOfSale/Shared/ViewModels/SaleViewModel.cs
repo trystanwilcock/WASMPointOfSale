@@ -8,8 +8,22 @@
 
         public int Quantity { get; set; }
 
-        public decimal TotalDue { get; set; }
+        public decimal Tax { get; set; }
 
-        public decimal TotalPaid { get; set; }
+        public decimal Total { get; set; }
+
+        public decimal Discount { get; set; }
+
+        public decimal Due { get; set; }
+
+        public decimal Paid { get; set; }
+
+        public decimal Outstanding
+        {
+            get
+            {
+                return Due - Paid;
+            }
+        }
     }
 }

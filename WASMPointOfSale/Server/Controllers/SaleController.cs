@@ -41,8 +41,11 @@ namespace WASMPointOfSale.Server.Controllers
                     Id = s.Id,
                     Timestamp = s.Timestamp,
                     Quantity = s.Quantity,
-                    TotalDue = s.Due,
-                    TotalPaid = s.SaleTransactions!.Where(st => st.Type == SaleTransactionType.Payment.ToString()).Sum(st => st.Amount)
+                    Tax = s.Tax,
+                    Total = s.Due,
+                    Discount = s.Discount,
+                    Due = s.Due,
+                    Paid = s.SaleTransactions!.Where(st => st.Type == SaleTransactionType.Payment.ToString()).Sum(st => st.Amount)
                 })
                 .ToArrayAsync();
         }
@@ -63,6 +66,7 @@ namespace WASMPointOfSale.Server.Controllers
                     Total = s.Total,
                     Discount = s.Discount,
                     Due = s.Due,
+                    Paid = s.SaleTransactions!.Where(st => st.Type == SaleTransactionType.Payment.ToString()).Sum(st => st.Amount),
                     Products = _mapper.Map<IEnumerable<SaleDetailProductViewModel>>(s.SaleProducts),
                     Transactions = _mapper.Map<IEnumerable<SaleDetailTransactionViewModel>>(s.SaleTransactions)
                 })

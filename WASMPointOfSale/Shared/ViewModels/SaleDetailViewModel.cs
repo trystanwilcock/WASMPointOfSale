@@ -14,6 +14,16 @@
 
         public decimal Due { get; set; }
 
+        public decimal Paid { get; set; }
+
+        public decimal Outstanding
+        {
+            get
+            {
+                return Due - Paid;
+            }
+        }
+
 
         public IEnumerable<SaleDetailProductViewModel>? Products { get; set; }
 

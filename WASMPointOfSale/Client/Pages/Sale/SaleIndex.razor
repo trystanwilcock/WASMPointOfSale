@@ -22,8 +22,12 @@ else
             <tr>
                 <th>Timestamp</th>
                 <th>Quantity</th>
+                <th>Tax</th>
+                <th>Total</th>
+                <th>Discount</th>
                 <th>Due</th>
                 <th>Paid</th>
+                <th>Outstanding</th>
                 <th></th>
             </tr>
         </thead>
@@ -33,8 +37,12 @@ else
                 <tr>
                     <td>@sale.Timestamp</td>
                     <td>@sale.Quantity</td>
-                    <td>@sale.TotalDue</td>
-                    <td>@sale.TotalPaid</td>
+                    <td>@sale.Tax</td>
+                    <td>@sale.Total</td>
+                    <td>@sale.Discount</td>
+                    <td>@sale.Due</td>
+                    <td>@sale.Paid</td>
+                    <td>@sale.Outstanding</td>
                     <td>
                         <button @onclick="() => Details(sale.Id)" class="btn btn-info">Details</button>
                     </td>
