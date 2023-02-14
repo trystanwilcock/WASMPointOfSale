@@ -30,7 +30,9 @@ else
         <tbody>
             @foreach (var stockLevel in stockLevels)
             {
-                <tr>
+                var sClass = stockLevel.StockLevelCritical == true ? "bg-danger text-light" : string.Empty;
+
+                <tr class="@sClass">
                     <td>@stockLevel.ProductName</td>
                     <td>@stockLevel.StockAdded</td>
                     <td>@stockLevel.ItemsSold</td>

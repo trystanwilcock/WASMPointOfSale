@@ -17,5 +17,15 @@
                 return StockAdded - ItemsSold;
             }
         }
+
+        public int ReorderAtStockLevel { get; set; }
+
+        public bool StockLevelCritical
+        {
+            get
+            {
+                return StockRemaining <= ReorderAtStockLevel ? true : false;
+            }
+        }
     }
 }

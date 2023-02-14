@@ -32,7 +32,7 @@ namespace WASMPointOfSale.Server.Controllers
 
             var stockRecords = await _stockController.Get();
             var criticalStockRecords = stockRecords
-                .Where(s => s.StockRemaining <= 5);
+                .Where(s => s.StockLevelCritical);
 
             var totalItems = _context
                 .Products

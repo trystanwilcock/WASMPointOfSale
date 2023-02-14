@@ -44,7 +44,8 @@ namespace WASMPointOfSale.Server.Controllers
                                             (from s in _context.SaleProducts
                                              where s.Code == p.Code
                                              select s).Count()
-                                          )
+                                          ),
+                                          ReorderAtStockLevel = p.ReorderAtStockLevel
                                       })
                               .ToArrayAsync();
 
