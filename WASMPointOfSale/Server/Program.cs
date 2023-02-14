@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using System;
 using WASMPointOfSale.Server.Classes;
+using WASMPointOfSale.Server.Controllers;
 using WASMPointOfSale.Server.Data;
 using WASMPointOfSale.Server.Models;
 
@@ -29,6 +30,8 @@ builder.Services.AddAuthentication()
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(typeof(WASMPointOfSaleAutoMapperProfile));
+
+builder.Services.AddTransient<StockController>();
 
 var app = builder.Build();
 

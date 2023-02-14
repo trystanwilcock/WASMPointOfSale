@@ -1,9 +1,46 @@
 ﻿@page "/"
+@attribute [Authorize]
+@inject HttpClient Http
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (dashboard == null)
+{
+    <Loader />
+}
+else
+{
+    <div class="card-group text-light">
+        <div class="card bg-info m-2">
+            <div class="card-body">
+                <span class="oi oi-british-pound fs-1 me-4" aria-hidden="true"></span>
+                <span class="fs-5">@dashboard.TotalSales Total Sales</span>
+            </div>
+        </div>
+        <div class="card bg-danger m-2">
+            <div class="card-body">
+                <span class="oi oi-graph fs-1 me-4" aria-hidden="true"></span>
+                <span class="fs-5">@dashboard.CriticalStock Critical Stock</span>
+            </div>
+        </div>
+        <div class="card bg-success m-2">
+            <div class="card-body">
+                <span class="oi oi-list fs-1 me-4" aria-hidden="true"></span>
+                <span class="fs-5">@dashboard.TotalItems Total Items</span>
+            </div>
+        </div>
+        <div class="card bg-warning m-2">
+            <div class="card-body">
+                <span class="oi oi-basket fs-1 me-4" aria-hidden="true"></span>
+                <span class="fs-5">@dashboard.TotalItemsSold Total Items Sold</span>
+            </div>
+        </div>
+    </div>
+}
 
-Welcome to your new app.
+@code {
+    DashboardViewModel? dashboard;
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    protected override async Task OnInitializedAsync() =>
+        dashboard = await Http.GetFromJsonAsync<DashboardViewModel>($"api/dashboard");
+}
