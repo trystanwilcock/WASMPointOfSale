@@ -8,11 +8,11 @@
 
         public DateTime Timestamp { get; set; }
 
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         public decimal Amount { get; set; }
 
 
-        public Sale Sale { get; set; }
+        public Sale? Sale { get; set; }
     }
 }
